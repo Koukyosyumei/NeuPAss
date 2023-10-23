@@ -6,7 +6,7 @@ import joblib
 import numpy as np
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
-from sklearn.utils.testing import ignore_warnings
+from sklearn.utils._testing import ignore_warnings
 
 from code_generator import code_generator
 
