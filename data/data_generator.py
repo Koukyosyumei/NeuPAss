@@ -1,17 +1,14 @@
 import os
 import random
 import subprocess
-import warnings
 
 import joblib
 import numpy as np
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
+from sklearn.utils.testing import ignore_warnings
 
 from code_generator import code_generator
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 source_dir = "source"
 binary_dir = "binary"
@@ -20,6 +17,7 @@ params_dir = "params"
 random.seed(42)
 
 
+@ignore_warnings(category=ConvergenceWarning)
 def run_grid_search(fname="sample"):
     code = code_generator(random.randint(1, 4))
     cpp_path = os.path.join(source_dir, fname + ".cpp")
