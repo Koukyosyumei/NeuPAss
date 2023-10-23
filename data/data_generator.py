@@ -1,12 +1,15 @@
 import os
 import random
 import subprocess
+import warnings
 
 import joblib
 import numpy as np
 from sklearn.mixture import GaussianMixture
 
 from code_generator import code_generator
+
+warnings.simplefilter("ignore")
 
 source_dir = "source"
 binary_dir = "binary"
