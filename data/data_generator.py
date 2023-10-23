@@ -2,10 +2,11 @@ import os
 import random
 import subprocess
 
+import joblib
 import numpy as np
 from sklearn.mixture import GaussianMixture
 
-from generator import code_generator
+from code_generator import code_generator
 
 source_dir = "source"
 binary_dir = "binary"
@@ -45,8 +46,7 @@ def run_grid_search(fname="sample"):
                         execute_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     stdout, stderr = execution_process.communicate()
-                    vals = np.array(
-                        list(map(float, str(stdout)[2:].split("\\n")[:-1])))
+                    vals = np.array(list(map(float, str(stdout)[2:].split("\\n")[:-1])))
 
                     gmm = GaussianMixture(n_components=10)
                     gmm.fit(vals.reshape(-1, 1))
@@ -65,4 +65,6 @@ def run_grid_search(fname="sample"):
 
 
 if __name__ == "__main__":
-    run_grid_search()
+    joblib.Parallel(n_jobs=-1)(
+        joblib.delayed(run_grid_search)(f"code{i}") for i in range(1000)
+    )
