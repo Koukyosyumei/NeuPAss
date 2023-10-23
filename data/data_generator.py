@@ -5,11 +5,13 @@ import warnings
 
 import joblib
 import numpy as np
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
 
 from code_generator import code_generator
 
-warnings.simplefilter("ignore")
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 source_dir = "source"
 binary_dir = "binary"
