@@ -34,7 +34,7 @@ def run_grid_search(fname="sample"):
 
     # Check if compilation was successful
     if compile_process.returncode == 0:
-        print("Compilation successful")
+        # print(f"Compilation successful - {fname}")
 
         i = 0
         for x in np.linspace(0.0, 1.0, 11):
