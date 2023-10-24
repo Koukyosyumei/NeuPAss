@@ -3,12 +3,16 @@ import random
 import subprocess
 
 import joblib
+import networkx as nx
 import numpy as np
+import torch
+from code_generator import code_generator
+from extract_ast import (extract_function_ast, print_function_ast,
+                         traverse_function_ast)
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
 from sklearn.utils._testing import ignore_warnings
-
-from code_generator import code_generator
+from torch_geometric.utils import from_networkx
 
 source_dir = "source"
 binary_dir = "binary"
@@ -16,11 +20,15 @@ params_dir = "params"
 
 random.seed(42)
 
+LABEL2CAT = {}
+SPELL2CAT = {}
+
 
 @ignore_warnings(category=ConvergenceWarning)
 def run_grid_search(fname="sample"):
     code = code_generator(random.randint(1, 4))
     cpp_path = os.path.join(source_dir, fname + ".cpp")
+    grp_path = os.path.join(source_dir, fname + ".pt")
     exe_path = os.path.join(binary_dir, fname)
     pf_dir = os.path.join(params_dir, fname)
     os.makedirs(pf_dir, exist_ok=True)
@@ -28,12 +36,22 @@ def run_grid_search(fname="sample"):
     with open(cpp_path, mode="w") as f:
         f.write(code)
 
+    it = extract_function_ast(cpp_path, "random_number_generator")
+    func_ast = list(it)[-1]
+
+    print_function_ast(func_ast)
+
+    graph = nx.DiGraph()
+    traverse_function_ast(func_ast, None, graph, LABEL2CAT, SPELL2CAT)
+    data = from_networkx(graph)
+    torch.save(data, grp_path)
+
     # Compile the C++ program
     compile_command = ["g++", cpp_path, "-o", exe_path]
     compile_process = subprocess.Popen(
         compile_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
-    compile_output, compile_error = compile_process.communicate()
+    _ = compile_process.communicate()
 
     # Check if compilation was successful
     if compile_process.returncode == 0:
@@ -69,5 +87,5 @@ def run_grid_search(fname="sample"):
 
 if __name__ == "__main__":
     joblib.Parallel(n_jobs=-1)(
-        joblib.delayed(run_grid_search)(f"code{i}") for i in range(1000)
+        joblib.delayed(run_grid_search)(f"code{i}") for i in range(2)
     )
