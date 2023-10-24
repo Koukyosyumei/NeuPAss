@@ -33,8 +33,10 @@ def if_block_generator(tab=1, b_id="ib"):
     dist = random.choice(dist_two_parameters)
     if "uniform" in dist:
         mu, sigma = f"std::min({mu}, {sigma})", f"std::max({mu}, {sigma})"
-    code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
-    code += "\t" * (tab + 1) + f"double b_id_true = {dist.split(' ')[1]}(engine);\n"
+    code += "\t" * (tab + 1) + dist + ";\n"
+    code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    code += "\t" * (tab + 1) + \
+        f"double b_id_true = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_true = b_id_true * b_id_true;\n"
@@ -48,8 +50,10 @@ def if_block_generator(tab=1, b_id="ib"):
     dist = random.choice(dist_two_parameters)
     if "uniform" in dist:
         mu, sigma = f"std::min({mu}, {sigma})", f"std::max({mu}, {sigma})"
-    code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
-    code += "\t" * (tab + 1) + f"double b_id_false = {dist.split(' ')[1]}(engine);\n"
+    code += "\t" * (tab + 1) + dist + ";\n"
+    code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    code += "\t" * (tab + 1) + \
+        f"double b_id_false = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_false = b_id_false * b_id_false;\n"
