@@ -6,13 +6,14 @@ import joblib
 import networkx as nx
 import numpy as np
 import torch
-from code_generator import code_generator
-from extract_ast import (extract_function_ast, print_function_ast,
-                         traverse_function_ast)
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
 from sklearn.utils._testing import ignore_warnings
 from torch_geometric.utils import from_networkx
+
+from code_generator import code_generator
+from extract_ast import (extract_function_ast, print_function_ast,
+                         traverse_function_ast)
 
 source_dir = "source"
 binary_dir = "binary"
@@ -25,10 +26,15 @@ SPELL2CAT = {}
 
 
 @ignore_warnings(category=ConvergenceWarning)
-def run_grid_search(fname="sample"):
+def run_grid_search(fname="sample", seed=0):
+    random.seed(seed)
     code = code_generator(random.randint(1, 4))
+    random.seed(seed)
+    code4ast = code_generator(random.randint(1, 4))
+
     cpp_path = os.path.join(source_dir, fname + ".cpp")
-    grp_path = os.path.join(source_dir, fname + ".pt")
+    cpp4ast_path = os.path.join(source_dir, fname + "_ast" + ".cpp")
+    # grp_path = os.path.join(source_dir, fname + ".pt")
     exe_path = os.path.join(binary_dir, fname)
     pf_dir = os.path.join(params_dir, fname)
     os.makedirs(pf_dir, exist_ok=True)
@@ -36,15 +42,16 @@ def run_grid_search(fname="sample"):
     with open(cpp_path, mode="w") as f:
         f.write(code)
 
-    it = extract_function_ast(cpp_path, "random_number_generator")
-    func_ast = list(it)[-1]
+    with open(cpp4ast_path, mode="w") as f:
+        f.write(cpp4ast_path)
 
-    print_function_ast(func_ast)
+    # it = extract_function_ast(cpp_path, "random_number_generator")
+    # func_ast = list(it)[-1]
 
-    graph = nx.DiGraph()
-    traverse_function_ast(func_ast, None, graph, LABEL2CAT, SPELL2CAT)
-    data = from_networkx(graph)
-    torch.save(data, grp_path)
+    # graph = nx.DiGraph()
+    # traverse_function_ast(func_ast, None, graph, LABEL2CAT, SPELL2CAT)
+    # data = from_networkx(graph)
+    # torch.save(data, grp_path)
 
     # Compile the C++ program
     compile_command = ["g++", cpp_path, "-o", exe_path]

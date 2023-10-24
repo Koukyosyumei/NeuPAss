@@ -24,7 +24,7 @@ def random_decimal_generator():
     return float(int(random.random() * 10)) / 10.0
 
 
-def if_block_generator(tab=1, b_id="ib"):
+def if_block_generator(tab=1, b_id="ib", for_ast=False):
     cond = f"z {random.choice(cond_ops)} {random_decimal_generator()}"
     code = "\t" * tab
     code += f"if ({cond})" + "{\n"
@@ -33,8 +33,11 @@ def if_block_generator(tab=1, b_id="ib"):
     dist = random.choice(dist_two_parameters)
     if "uniform" in dist:
         mu, sigma = f"std::min({mu}, {sigma})", f"std::max({mu}, {sigma})"
-    code += "\t" * (tab + 1) + dist + ";\n"
-    code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    if for_ast:
+        code += "\t" * (tab + 1) + dist + ";\n"
+        code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    else:
+        code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
     code += "\t" * (tab + 1) + f"double b_id_true = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
@@ -49,8 +52,11 @@ def if_block_generator(tab=1, b_id="ib"):
     dist = random.choice(dist_two_parameters)
     if "uniform" in dist:
         mu, sigma = f"std::min({mu}, {sigma})", f"std::max({mu}, {sigma})"
-    code += "\t" * (tab + 1) + dist + ";\n"
-    code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    if for_ast:
+        code += "\t" * (tab + 1) + dist + ";\n"
+        code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
+    else:
+        code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
     code += "\t" * (tab + 1) + f"double b_id_false = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
@@ -64,14 +70,14 @@ def if_block_generator(tab=1, b_id="ib"):
     return code
 
 
-def block_generator(num_block=3):
+def block_generator(num_block=3, for_ast=False):
     code = ""
     for _ in range(num_block):
-        code += if_block_generator()
+        code += if_block_generator(for_ast=for_ast)
     return code
 
 
-def code_generator(num_block=3):
+def code_generator(num_block=3, for_ast=False):
     code = "#include <iostream>\n"
     code += "#include <cmath>\n"
     code += "#include <random>\n\n"
@@ -79,7 +85,7 @@ def code_generator(num_block=3):
     code += "std::default_random_engine engine(seed_gen());\n\n"
     code += "double random_number_generator(double x, double y, double z) {\n"
     code += "\tdouble r = 0;\n\n"
-    code += block_generator(num_block)
+    code += block_generator(num_block, for_ast)
     code += "\treturn r;\n"
     code += "}\n\n"
     code += "int main(int argc, char *argv[]){\n"
