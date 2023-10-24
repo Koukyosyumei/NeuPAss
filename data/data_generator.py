@@ -3,17 +3,17 @@ import random
 import subprocess
 
 import joblib
-import networkx as nx
+# import networkx as nx
 import numpy as np
-import torch
+# import torch
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.mixture import GaussianMixture
 from sklearn.utils._testing import ignore_warnings
-from torch_geometric.utils import from_networkx
+# from torch_geometric.utils import from_networkx
 
 from code_generator import code_generator
-from extract_ast import (extract_function_ast, print_function_ast,
-                         traverse_function_ast)
+# from extract_ast import (extract_function_ast, print_function_ast,
+#                         traverse_function_ast)
 
 source_dir = "source"
 binary_dir = "binary"
@@ -21,8 +21,8 @@ params_dir = "params"
 
 random.seed(42)
 
-LABEL2CAT = {}
-SPELL2CAT = {}
+# LABEL2CAT = {}
+# SPELL2CAT = {}
 
 
 @ignore_warnings(category=ConvergenceWarning)
@@ -43,7 +43,7 @@ def run_grid_search(fname="sample", seed=0):
         f.write(code)
 
     with open(cpp4ast_path, mode="w") as f:
-        f.write(cpp4ast_path)
+        f.write(code4ast)
 
     # it = extract_function_ast(cpp_path, "random_number_generator")
     # func_ast = list(it)[-1]
