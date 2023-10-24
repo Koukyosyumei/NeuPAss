@@ -14,7 +14,7 @@ dist_two_parameters = [
     "std::uniform_real_distribution<> u_dist",
     "std::normal_distribution<> n_dist",
     # "std::extreme_value_distribution<> ev_dist",
-    "std::lognormal_distribution<> ld_dist",
+    # "std::lognormal_distribution<> ld_dist",
 ]
 
 cond_ops = ["==", ">", "<"]
@@ -38,7 +38,8 @@ def if_block_generator(tab=1, b_id="ib", for_ast=False):
         code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
     else:
         code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
-    code += "\t" * (tab + 1) + f"double b_id_true = {dist.split(' ')[1]}(engine);\n"
+    code += "\t" * (tab + 1) + \
+        f"double b_id_true = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_true = b_id_true * b_id_true;\n"
@@ -57,7 +58,8 @@ def if_block_generator(tab=1, b_id="ib", for_ast=False):
         code += "\t" * (tab + 1) + f"{dist.split(' ')[1]}({mu}, {sigma});\n"
     else:
         code += "\t" * (tab + 1) + dist + f"({mu}, {sigma});\n"
-    code += "\t" * (tab + 1) + f"double b_id_false = {dist.split(' ')[1]}(engine);\n"
+    code += "\t" * (tab + 1) + \
+        f"double b_id_false = {dist.split(' ')[1]}(engine);\n"
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_false = b_id_false * b_id_false;\n"
