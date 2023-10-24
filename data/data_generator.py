@@ -95,5 +95,5 @@ def run_grid_search(fname="sample", seed=0):
 
 if __name__ == "__main__":
     joblib.Parallel(n_jobs=-1)(
-        joblib.delayed(run_grid_search)(f"code{i}", i) for i in range(2)
+        joblib.delayed(run_grid_search)(f"code{i}", i) for i in range(1034)
     )
