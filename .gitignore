@@ -1,6 +1,6 @@
-data/source/*
-data/binary/*
-data/params/**
+# data/source/*
+# data/binary/*
+# data/params/**
 
 mple/*/data
 example/*/openml
