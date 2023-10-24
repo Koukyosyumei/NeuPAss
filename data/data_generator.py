@@ -30,7 +30,7 @@ def run_grid_search(fname="sample", seed=0):
     random.seed(seed)
     code = code_generator(random.randint(1, 4))
     random.seed(seed)
-    code4ast = code_generator(random.randint(1, 4))
+    code4ast = code_generator(random.randint(1, 4), True)
 
     cpp_path = os.path.join(source_dir, fname + ".cpp")
     cpp4ast_path = os.path.join(source_dir, fname + "_ast" + ".cpp")
