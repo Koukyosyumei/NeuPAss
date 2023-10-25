@@ -66,39 +66,38 @@ def run_grid_search(fname="sample", seed=0):
     if compile_process.returncode == 0:
         # print(f"Compilation successful - {fname}")
 
-        x_list = []
-        y_list = []
+        # x_list = []
+        # y_list = []
         z_list = []
         weights_list = []
         means_list = []
         covariances_list = []
 
-        for x in np.linspace(0.0, 1.0, 11):
-            for y in np.linspace(0.1, 1.0, 10):
-                for z in np.linspace(0.0, 1.0, 11):
-                    # Execute the compiled program and capture its output
-                    execute_command = [exe_path] + [str(x), str(y), str(z)]
-                    execution_process = subprocess.Popen(
-                        execute_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                    )
-                    stdout, stderr = execution_process.communicate()
-                    vals = np.array(
-                        list(map(float, str(stdout)[2:].split("\\n")[:-1])))
+        # for x in np.linspace(0.0, 1.0, 11):
+        # for y in np.linspace(0.1, 1.0, 10):
+        for z in np.linspace(0.0, 1.0, 11):
+            # Execute the compiled program and capture its output
+            execute_command = [exe_path] + [str(z)]
+            execution_process = subprocess.Popen(
+                execute_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            stdout, stderr = execution_process.communicate()
+            vals = np.array(list(map(float, str(stdout)[2:].split("\\n")[:-1])))
 
-                    gmm = GaussianMixture(n_components=5)
-                    gmm.fit(vals.reshape(-1, 1))
+            gmm = GaussianMixture(n_components=5)
+            gmm.fit(vals.reshape(-1, 1))
 
-                    x_list.append(x)
-                    y_list.append(y)
-                    z_list.append(z)
-                    weights_list.append(gmm.weights_.reshape(1, -1))
-                    means_list.append(gmm.means_.reshape(1, -1))
-                    covariances_list.append(gmm.covariances_.reshape(1, -1))
+            # x_list.append(x)
+            # y_list.append(y)
+            z_list.append(z)
+            weights_list.append(gmm.weights_.reshape(1, -1))
+            means_list.append(gmm.means_.reshape(1, -1))
+            covariances_list.append(gmm.covariances_.reshape(1, -1))
 
         np.savez_compressed(
             pf_path,
-            x=np.array(x_list),
-            y=np.array(y_list),
+            # x=np.array(x_list),
+            # y=np.array(y_list),
             z=np.array(z_list),
             weights=np.concatenate(weights_list, axis=0),
             means=np.concatenate(means_list, axis=0),
@@ -108,5 +107,5 @@ def run_grid_search(fname="sample", seed=0):
 
 if __name__ == "__main__":
     joblib.Parallel(n_jobs=-1)(
-        joblib.delayed(run_grid_search)(f"code{i}", i) for i in range(1000)
+        joblib.delayed(run_grid_search)(f"code{i}", i) for i in range(10000)
     )
