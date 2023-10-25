@@ -90,7 +90,7 @@ def code_generator(num_block=3, for_ast=False):
     code += "\tdouble x = atof(argv[1]);\n"
     code += "\tdouble y = atof(argv[2]);\n"
     code += "\tdouble z = atof(argv[3]);\n"
-    code += "\tfor (int i = 0; i < 1000; i ++){\n"
+    code += "\tfor (int i = 0; i < 3000; i ++){\n"
     code += "\t\tstd::cout << random_number_generator(x, y, z) << std::endl;\n"
     code += "\t}\n"
     code += "}\n"
