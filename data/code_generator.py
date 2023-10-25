@@ -43,8 +43,6 @@ def if_block_generator(tab=1, b_id="ib", for_ast=False):
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_true = b_id_true * b_id_true;\n"
-    elif mp > 0.5:
-        code += "\t" * (tab + 1) + "b_id_true = std::cos(b_id_true);\n"
     if random.random() > 0.1:
         code += "\t" * (tab + 1) + "r += b_id_true;\n"
     code += "\t" * tab + "} else {\n"
@@ -63,8 +61,6 @@ def if_block_generator(tab=1, b_id="ib", for_ast=False):
     mp = random.random()
     if mp > 0.75:
         code += "\t" * (tab + 1) + "b_id_false = b_id_false * b_id_false;\n"
-    elif mp > 0.5:
-        code += "\t" * (tab + 1) + "b_id_false = std::cos(b_id_false);\n"
     if random_decimal_generator() > 0.1:
         code += "\t" * (tab + 1) + "r += b_id_false;\n"
     code += "\t" * tab + "}\n"
